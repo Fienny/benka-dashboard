@@ -9,37 +9,15 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  passwordHash  String
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String   // plain text, admin creates accounts
+  name      String
+  role      String   @default("engineer") // admin, engineer, viewer
+  createdAt DateTime @default(now())
 
-  roles         UserRole[]
   projects      ProjectMember[]
   uploadedFiles File[]
-}
-
-model Role {
-  id          String   @id @default(cuid())
-  name        String   @unique // Admin, Engineer, Viewer
-  description String?
-  createdAt   DateTime @default(now())
-
-  users UserRole[]
-}
-
-model UserRole {
-  id     String @id @default(cuid())
-  userId String
-  roleId String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, roleId])
 }
 
 model Project {

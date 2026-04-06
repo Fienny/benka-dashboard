@@ -55,10 +55,10 @@ export interface ProjectFile {
 
 export interface User {
   id: string;
+  username: string;
+  password: string;
   name: string;
-  email: string;
-  image: string | null;
-  roles: string[];
+  role: string; // admin, engineer, viewer
   createdAt: string;
 }
 
@@ -196,12 +196,12 @@ export const mockFiles: Record<string, ProjectFile[]> = {
 };
 
 export const mockUsers: User[] = [
-  { id: "u1", name: "Admin Benka", email: "admin@benka.uz", image: null, roles: ["Admin"], createdAt: "2025-01-01" },
-  { id: "u2", name: "Иван Петров", email: "petrov@benka.uz", image: null, roles: ["Engineer"], createdAt: "2025-03-15" },
-  { id: "u3", name: "Мария Сидорова", email: "sidorova@benka.uz", image: null, roles: ["Engineer"], createdAt: "2025-04-20" },
-  { id: "u4", name: "Алексей Ким", email: "kim@benka.uz", image: null, roles: ["Engineer"], createdAt: "2025-05-10" },
-  { id: "u5", name: "Рустам Каримов", email: "karimov@benka.uz", image: null, roles: ["Engineer", "Viewer"], createdAt: "2025-06-01" },
-  { id: "u6", name: "Дмитрий Ли", email: "li@benka.uz", image: null, roles: ["Viewer"], createdAt: "2025-08-15" },
+  { id: "u1", username: "admin", password: "admin123", name: "Admin Benka", role: "admin", createdAt: "2025-01-01" },
+  { id: "u2", username: "petrov", password: "petrov123", name: "Иван Петров", role: "engineer", createdAt: "2025-03-15" },
+  { id: "u3", username: "sidorova", password: "sidorova123", name: "Мария Сидорова", role: "engineer", createdAt: "2025-04-20" },
+  { id: "u4", username: "kim", password: "kim123", name: "Алексей Ким", role: "engineer", createdAt: "2025-05-10" },
+  { id: "u5", username: "karimov", password: "karimov123", name: "Рустам Каримов", role: "engineer", createdAt: "2025-06-01" },
+  { id: "u6", username: "li", password: "li123", name: "Дмитрий Ли", role: "viewer", createdAt: "2025-08-15" },
 ];
 
 // Dashboard metrics

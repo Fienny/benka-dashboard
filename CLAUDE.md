@@ -18,7 +18,7 @@
 | Language    | TypeScript                          |
 | Styling     | Tailwind CSS v4 + shadcn/ui (base-ui) |
 | Database    | PostgreSQL (via Prisma ORM)         |
-| Auth        | NextAuth.js (planned)               |
+| Auth        | Cookie-based session (username/password) |
 | Charts      | Recharts                            |
 | Icons       | Lucide React                        |
 | Package Mgr | npm                                 |
@@ -38,22 +38,26 @@ Examples: `PJ-TAS-1001`, `STC-SUR-2050`, `TO-SAM-3012`
 ```
 src/
 ├── app/
-│   ├── layout.tsx          — Root layout with Sidebar
+│   ├── layout.tsx          — Root layout (no sidebar)
 │   ├── page.tsx            — Redirects to /dashboard
-│   ├── dashboard/page.tsx  — Metrics + 4 charts (Recharts)
-│   ├── projects/page.tsx   — Project list with filters (type/region/status/search)
-│   ├── projects/[id]/page.tsx — File manager (drag-drop, list/grid, tabs)
-│   └── admin/page.tsx      — User management, roles, project assignments
+│   ├── login/page.tsx      — Login page (username + password)
+│   ├── (app)/layout.tsx    — App layout with Sidebar (auth required)
+│   ├── (app)/dashboard/page.tsx  — Metrics + 4 charts (Recharts)
+│   ├── (app)/projects/page.tsx   — Project list with filters
+│   ├── (app)/projects/[id]/page.tsx — File manager (drag-drop, list/grid, tabs)
+│   ├── (app)/admin/page.tsx      — User management (admin only)
+│   └── api/auth/           — Login/logout/me API routes
 ├── components/
 │   ├── sidebar.tsx         — Navigation sidebar with search + user dropdown
 │   ├── dashboard-charts.tsx — Recharts chart components
 │   └── ui/                 — shadcn/ui components (button, card, badge, etc.)
 ├── lib/
+│   ├── auth.ts             — Session helpers (cookie-based)
 │   ├── mock-data.ts        — Mock data for UI prototype
 │   ├── prisma.ts           — Prisma client (safe import, works without DB)
 │   └── utils.ts            — cn() utility
 prisma/
-└── schema.prisma           — DB schema (User, Role, UserRole, Project, ProjectMember, File)
+└── schema.prisma           — DB schema (User, Project, ProjectMember, File)
 ```
 
 ## Completed Work
@@ -71,23 +75,35 @@ prisma/
 - [x] Fixed build: removed Google Fonts (not available), fixed asChild → base-ui, fixed Select typing
 - [x] Created CLAUDE.md, README.md, deploy_local.md
 
+### 2026-04-06 — Auth System (simple login/password)
+- [x] Simplified Prisma schema: removed Role/UserRole tables, User now has single `role` field
+- [x] Switched from email to `username` + `password` (plain text, admin creates accounts)
+- [x] Built login page (`/login`) with username/password form
+- [x] Cookie-based sessions (`benka_session`, JSON, httpOnly, 7 days)
+- [x] API routes: POST /api/auth/login, POST /api/auth/logout, GET /api/auth/me
+- [x] Middleware: redirect unauthenticated → /login, admin-only routes protection
+- [x] Route groups: `(app)/` for authenticated pages (with sidebar), `/login` standalone
+- [x] Sidebar shows logged-in user name/role, dropdown with logout
+- [x] Admin Panel only visible to admin role in sidebar navigation
+- [x] Updated mock data: users now have username/password/role instead of email/roles
+
 ## Known Issues / Notes
 
 - **shadcn/ui v4 uses base-ui, NOT Radix.** No `asChild` prop — wrap triggers with children directly
 - **Select `onValueChange`** passes `string | null`, not `string` — always handle null: `(v) => setValue(v ?? "default")`
 - **Google Fonts** not available in this environment — using system font stack
 - **Prisma client** — `src/lib/prisma.ts` uses dynamic require to avoid build errors when client is not generated
-- **Auth** — NextAuth not yet configured, currently using mock user in sidebar
+- **Auth** — Cookie-based, plain text passwords, no NextAuth. Admin creates all accounts manually
+- **Mock credentials**: admin/admin123, petrov/petrov123, kim/kim123, li/li123, etc.
 
 ## Pending / TODO
 
 - [ ] Connect PostgreSQL database (set DATABASE_URL, run prisma generate + db push)
-- [ ] Configure NextAuth.js (login/logout, session, role-based access)
 - [ ] Replace mock data with real Prisma queries (server components + server actions)
 - [ ] Implement file upload API (POST /api/files with multipart form data)
 - [ ] Add file download/delete functionality
 - [ ] Add "Create Project" dialog with type/region/id form
 - [ ] Add user-to-project assignment API
-- [ ] Role-based route protection (middleware or layout-level checks)
+- [ ] Docker / deployment config for server
 - [ ] Dark mode toggle
 - [ ] Mobile responsiveness polish

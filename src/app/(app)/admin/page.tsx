@@ -41,12 +41,12 @@ import {
   FolderKanban,
 } from "lucide-react";
 
-const ROLES = ["Admin", "Engineer", "Viewer"];
+const ROLES = ["admin", "engineer", "viewer"];
 
 const roleColors: Record<string, string> = {
-  Admin: "bg-red-100 text-red-700",
-  Engineer: "bg-blue-100 text-blue-700",
-  Viewer: "bg-zinc-100 text-zinc-600",
+  admin: "bg-red-100 text-red-700",
+  engineer: "bg-blue-100 text-blue-700",
+  viewer: "bg-zinc-100 text-zinc-600",
 };
 
 export default function AdminPage() {
@@ -56,7 +56,7 @@ export default function AdminPage() {
     (u) =>
       userSearch === "" ||
       u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
-      u.email.toLowerCase().includes(userSearch.toLowerCase())
+      u.username.toLowerCase().includes(userSearch.toLowerCase())
   );
 
   return (
@@ -93,7 +93,7 @@ export default function AdminPage() {
               <div>
                 <p className="text-xs text-muted-foreground">Admins</p>
                 <p className="text-xl font-bold">
-                  {mockUsers.filter((u) => u.roles.includes("Admin")).length}
+                  {mockUsers.filter((u) => u.role === "admin").length}
                 </p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function AdminPage() {
               <div>
                 <p className="text-xs text-muted-foreground">Engineers</p>
                 <p className="text-xl font-bold">
-                  {mockUsers.filter((u) => u.roles.includes("Engineer")).length}
+                  {mockUsers.filter((u) => u.role === "engineer").length}
                 </p>
               </div>
             </div>
@@ -171,16 +171,16 @@ export default function AdminPage() {
                 </DialogHeader>
                 <div className="space-y-4 pt-2">
                   <div>
-                    <label className="text-sm font-medium">Name</label>
-                    <Input placeholder="Full name" className="mt-1" />
+                    <label className="text-sm font-medium">Full Name</label>
+                    <Input placeholder="Иван Петров" className="mt-1" />
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Email</label>
-                    <Input placeholder="email@benka.uz" className="mt-1" />
+                    <label className="text-sm font-medium">Username</label>
+                    <Input placeholder="petrov" className="mt-1" />
                   </div>
                   <div>
                     <label className="text-sm font-medium">Password</label>
-                    <Input type="password" placeholder="••••••••" className="mt-1" />
+                    <Input placeholder="Enter password" className="mt-1" />
                   </div>
                   <div>
                     <label className="text-sm font-medium">Role</label>
@@ -191,7 +191,7 @@ export default function AdminPage() {
                       <SelectContent>
                         {ROLES.map((role) => (
                           <SelectItem key={role} value={role}>
-                            {role}
+                            <span className="capitalize">{role}</span>
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -208,8 +208,8 @@ export default function AdminPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>User</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Roles</TableHead>
+                  <TableHead>Username</TableHead>
+                  <TableHead>Role</TableHead>
                   <TableHead>Joined</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -230,21 +230,16 @@ export default function AdminPage() {
                         <span className="font-medium text-sm">{user.name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {user.email}
+                    <TableCell className="text-sm text-muted-foreground font-mono">
+                      @{user.username}
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-1">
-                        {user.roles.map((role) => (
-                          <Badge
-                            key={role}
-                            variant="secondary"
-                            className={roleColors[role] || ""}
-                          >
-                            {role}
-                          </Badge>
-                        ))}
-                      </div>
+                      <Badge
+                        variant="secondary"
+                        className={`capitalize ${roleColors[user.role] || ""}`}
+                      >
+                        {user.role}
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {user.createdAt}
@@ -279,21 +274,21 @@ export default function AdminPage() {
             <CardContent className="space-y-4">
               {[
                 {
-                  name: "Admin",
+                  name: "admin",
                   desc: "Full access to all features including user management, role assignment, and project configuration",
-                  users: mockUsers.filter((u) => u.roles.includes("Admin")).length,
+                  users: mockUsers.filter((u) => u.role === "admin").length,
                   color: "bg-red-100 text-red-700",
                 },
                 {
-                  name: "Engineer",
+                  name: "engineer",
                   desc: "Can work on assigned projects, upload/download files, update progress",
-                  users: mockUsers.filter((u) => u.roles.includes("Engineer")).length,
+                  users: mockUsers.filter((u) => u.role === "engineer").length,
                   color: "bg-blue-100 text-blue-700",
                 },
                 {
-                  name: "Viewer",
+                  name: "viewer",
                   desc: "Read-only access to assigned projects and their files",
-                  users: mockUsers.filter((u) => u.roles.includes("Viewer")).length,
+                  users: mockUsers.filter((u) => u.role === "viewer").length,
                   color: "bg-zinc-100 text-zinc-600",
                 },
               ].map((role) => (
@@ -302,7 +297,7 @@ export default function AdminPage() {
                   className="flex items-center justify-between border rounded-lg p-4"
                 >
                   <div className="flex items-center gap-4">
-                    <Badge variant="secondary" className={`${role.color} text-sm px-3 py-1`}>
+                    <Badge variant="secondary" className={`${role.color} text-sm px-3 py-1 capitalize`}>
                       {role.name}
                     </Badge>
                     <div>
@@ -312,10 +307,6 @@ export default function AdminPage() {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-3.5 w-3.5 mr-1" />
-                    Edit
-                  </Button>
                 </div>
               ))}
             </CardContent>
