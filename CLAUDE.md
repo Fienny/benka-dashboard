@@ -96,6 +96,7 @@ prisma/
 - **Auth** — Cookie-based, plain text passwords, no NextAuth. Admin creates all accounts manually
 - **Next.js 16**: `middleware.ts` renamed to `proxy.ts` — export `proxy()` not `middleware()`
 - **base-ui Triggers render `<button>`**: Never nest `<Button>` or `<button>` inside `DropdownMenuTrigger`/`DialogTrigger` — causes nested-button hydration errors. Pass `className={buttonVariants()}` directly to the Trigger instead
+- **Prisma 7 config**: `url` is NOT allowed in `schema.prisma` anymore. DATABASE_URL goes into `.env` and is loaded via `prisma.config.ts` (`datasource: { url: process.env.DATABASE_URL }`). Requires `dotenv` as dev dependency
 - **Mock credentials**: admin/admin123, petrov/petrov123, kim/kim123, li/li123, etc.
 
 ## Pending / TODO

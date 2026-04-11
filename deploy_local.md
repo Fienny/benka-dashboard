@@ -37,11 +37,12 @@ Create a `.env` file in the project root:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/benka_workbench"
-NEXTAUTH_SECRET="your-random-secret-here"
-NEXTAUTH_URL="http://localhost:3000"
 ```
 
 Replace `USER` and `PASSWORD` with your PostgreSQL credentials.
+
+> **Note (Prisma 7):** In Prisma 7 the `url` property is no longer set in `schema.prisma`.
+> Connection URL is read from `.env` via `prisma.config.ts` (already configured in this repo).
 
 ### 3. Set up the database
 
