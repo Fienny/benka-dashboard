@@ -3,12 +3,13 @@
 import { useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { mockProjects, mockFiles, type ProjectFile } from "@/lib/mock-data";
+// import { mockProjects, mockFiles, type ProjectFile } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -79,8 +80,21 @@ function getFileExtColor(name: string): string {
 export default function ProjectDetailPage() {
   const params = useParams();
   const projectId = params.id as string;
-  const project = mockProjects.find((p) => p.id === projectId);
-  const files = mockFiles[projectId] || [];
+
+  const [project, setProject] = useState<any>(null);
+  // type ProjectFile = any;
+
+  const [files, setFiles] = useState<ProjectFile[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/projects/${projectId}`)
+      .then((res) => res.json())
+      .then((data) => setProject(data));
+
+    fetch(`/api/files?projectId=${projectId}`)
+      .then((res) => res.json())
+      .then((data) => setFiles(data));
+  }, [projectId]);
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"list" | "grid">("list");
@@ -103,21 +117,44 @@ export default function ProjectDetailPage() {
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    // TODO: handle file upload when backend is connected
+
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("projectId", projectId);
+
+    await fetch("/api/files", {
+      method: "POST",
+      body: formData,
+    });
+    const res = await fetch(`/api/files?projectId=${projectId}`);
+    const data = await res.json();
+    setFiles(data);
+
+    alert("File uploaded!");
   }, []);
 
+  // if (!project) {
+  //   return (
+  //     <div className="text-center py-20">
+  //       <FolderOpen className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
+  //       <h2 className="text-lg font-semibold">Project not found</h2>
+  //       <Link href="/projects" className="text-sm text-primary underline mt-2 inline-block">
+  //         Back to projects
+  //       </Link>
+  //     </div>
+  //   );
+  // }
   if (!project) {
     return (
       <div className="text-center py-20">
-        <FolderOpen className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
-        <h2 className="text-lg font-semibold">Project not found</h2>
-        <Link href="/projects" className="text-sm text-primary underline mt-2 inline-block">
-          Back to projects
-        </Link>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -159,10 +196,25 @@ export default function ProjectDetailPage() {
             </div>
             <p className="text-muted-foreground mt-1">{project.name}</p>
           </div>
-          <Button>
-            <Upload className="h-4 w-4 mr-2" />
-            Upload Files
-          </Button>
+          <input
+            type="file"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              const formData = new FormData();
+              formData.append("file", file);
+              formData.append("projectId", projectId);
+              await fetch("/api/files", {
+                method: "POST",
+                body: formData,
+              });
+              const res = await fetch(`/api/files?projectId=${projectId}`);
+              const data = await res.json();
+              setFiles(data);
+              alert("Uploaded!");
+            }}
+          />
         </div>
       </div>
 

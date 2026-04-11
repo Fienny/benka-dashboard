@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { PROJECT_TYPES, REGIONS } from "@/lib/mock-data";
 import Link from "next/link";
-import {
-  mockProjects,
-  PROJECT_TYPES,
-  REGIONS,
-  type ProjectStatus,
-} from "@/lib/mock-data";
+import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -45,12 +41,19 @@ const typeColors: Record<string, string> = {
 };
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/projects")
+      .then((res) => res.json())
+      .then((data) => setProjects(data));
+  }, []);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [regionFilter, setRegionFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const filtered = mockProjects.filter((p) => {
+  const filtered = projects.filter((p) => {
     const matchSearch =
       search === "" ||
       p.code.toLowerCase().includes(search.toLowerCase()) ||
@@ -71,10 +74,12 @@ export default function ProjectsPage() {
             Browse and manage engineering projects
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          New Project
-        </Button>
+          <Link href="/projects/new">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              New Project
+            </Button>
+          </Link>
       </div>
 
       {/* Filters */}
