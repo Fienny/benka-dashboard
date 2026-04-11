@@ -95,6 +95,7 @@ prisma/
 - **Prisma client** — `src/lib/prisma.ts` uses dynamic require to avoid build errors when client is not generated
 - **Auth** — Cookie-based, plain text passwords, no NextAuth. Admin creates all accounts manually
 - **Next.js 16**: `middleware.ts` renamed to `proxy.ts` — export `proxy()` not `middleware()`
+- **base-ui Triggers render `<button>`**: Never nest `<Button>` or `<button>` inside `DropdownMenuTrigger`/`DialogTrigger` — causes nested-button hydration errors. Pass `className={buttonVariants()}` directly to the Trigger instead
 - **Mock credentials**: admin/admin123, petrov/petrov123, kim/kim123, li/li123, etc.
 
 ## Pending / TODO

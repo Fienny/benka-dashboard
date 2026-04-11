@@ -4,7 +4,7 @@ import { useState } from "react";
 import { mockUsers, mockProjects } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -159,11 +159,9 @@ export default function AdminPage() {
               />
             </div>
             <Dialog>
-              <DialogTrigger>
-                <Button>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add User
-                </Button>
+              <DialogTrigger className={buttonVariants()}>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Add User
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>

@@ -137,18 +137,16 @@ export function Sidebar() {
         {/* User section */}
         <div className="border-t p-3">
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-sidebar-accent/50 transition-colors">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="truncate font-medium text-sm">{user?.name ?? "Loading..."}</p>
-                  <p className="truncate text-xs text-muted-foreground capitalize">{user?.role ?? ""}</p>
-                </div>
-              </button>
+            <DropdownMenuTrigger className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-sidebar-accent/50 transition-colors">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="truncate font-medium text-sm">{user?.name ?? "Loading..."}</p>
+                <p className="truncate text-xs text-muted-foreground capitalize">{user?.role ?? ""}</p>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <div className="px-2 py-1.5">
