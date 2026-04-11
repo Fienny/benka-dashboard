@@ -81,7 +81,7 @@ prisma/
 - [x] Built login page (`/login`) with username/password form
 - [x] Cookie-based sessions (`benka_session`, JSON, httpOnly, 7 days)
 - [x] API routes: POST /api/auth/login, POST /api/auth/logout, GET /api/auth/me
-- [x] Middleware: redirect unauthenticated → /login, admin-only routes protection
+- [x] Proxy (`src/proxy.ts`, Next.js 16 replacement for middleware): redirect unauthenticated → /login, admin-only routes protection
 - [x] Route groups: `(app)/` for authenticated pages (with sidebar), `/login` standalone
 - [x] Sidebar shows logged-in user name/role, dropdown with logout
 - [x] Admin Panel only visible to admin role in sidebar navigation
@@ -94,6 +94,7 @@ prisma/
 - **Google Fonts** not available in this environment — using system font stack
 - **Prisma client** — `src/lib/prisma.ts` uses dynamic require to avoid build errors when client is not generated
 - **Auth** — Cookie-based, plain text passwords, no NextAuth. Admin creates all accounts manually
+- **Next.js 16**: `middleware.ts` renamed to `proxy.ts` — export `proxy()` not `middleware()`
 - **Mock credentials**: admin/admin123, petrov/petrov123, kim/kim123, li/li123, etc.
 
 ## Pending / TODO
